@@ -1,4 +1,4 @@
-from app import app, db
+from watchlist.models import app,db
 
 print("开始创建数据库...")
 

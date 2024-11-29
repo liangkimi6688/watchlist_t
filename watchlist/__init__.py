@@ -1,5 +1,6 @@
 # coding:utf-8
 import os
+import sys
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -7,6 +8,12 @@ from flask_login import LoginManager
 app = Flask(__name__)
 
 app.secret_key = 'liang'
+# SQLite URI compatible
+WIN = sys.platform.startswith('win')
+if WIN:
+    prefix = 'sqlite:///'
+else:
+    prefix = 'sqlite:////'
 # MySQL配置
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost:3306/watchlist'

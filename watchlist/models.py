@@ -1,10 +1,8 @@
 # coding:utf-8
 from flask_login import UserMixin
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_migrate import Migrate
-from . import app,db
-
-migrate = Migrate( db)
+from watchlist import db
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -17,7 +15,6 @@ class User(db.Model, UserMixin):
 
     def validate_password(self, password):
         return check_password_hash(self.password_hash, password)
-
 
 class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)

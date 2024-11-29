@@ -4,36 +4,29 @@ import sys
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 
-app.secret_key = 'liang'
-# SQLite URI compatible
-WIN = sys.platform.startswith('win')
-if WIN:
-    prefix = 'sqlite:///'
-else:
-    prefix = 'sqlite:////'
-# MySQL配置
+# 数据库配置
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost:3306/watchlist'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# 初始化数据库和迁移
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+# 初始化登录管理
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
-
 
 @login_manager.user_loader
 def load_user(user_id):
     from .models import User
-    user = User.query.get(int(user_id))
-    return user
+    return User.query.get(int(user_id))
 
-from . import views, errors, commands
-
-# login_manager.login_message = 'Your custom message'
-
+from watchlist import views, errors, commands
 
 @app.context_processor
 def inject_user():
